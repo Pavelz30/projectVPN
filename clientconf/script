@@ -19,20 +19,26 @@ function checkwork {
 	fi	
 }
 
-path_to_easy_rsa_dir=~/projectVPN/openVPN
+path_to_easy_rsa_dir=~/projectVPN/clientconf
 
-echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN.\e[0m"
-sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null && cd ~/easy-rsa
+echo -e "\e[0;34mЭтап 1/10. Генерация сертификатов и ключей для пользователя $1.\e[0m"
+mkdir -p ~/clients/keys && \
+	cd ~/easy-rsa && \
+	./easyrsa --batch gen-req $1 nopass && \
+	cp pki/private/$1.key ~/clients/keys/ && \
+	./easyrsa --batch sign-req client $1 && \
+	cp ~/easy-rsa/ta.key ~/clients/keys/ && \
+	sudo cp /etc/openvpn/server/ca.crt ~/clients/keys/
+	sudo chown $USER:$USER ~/clients/keys/*
+	mkdir -p ~/clients/files && \
+	cp $path_to_easy_rsa_dir/base.conf
 checkwork 1
 
-echo -e "\e[0;34mЭтап 2/10. Настройка iptables.\e[0m"
-sudo apt-get install iptables -y > /dev/null && \
-	sudo chmod +x iptables.sh && \
-	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}') && \ 
-	proto=$(cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
-	port=$(cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
-	sudo $path_to_easy_rsa_dir/iptables.sh $int $proto $port	
+echo -e "\e[0;34mЭтап 2/10. Конфигарция клиента $1.\e[0m"
+mkdir -p ~/clients/files && \
+
 checkwork 2
+
 
 #echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
 #cp $path_to_easy_rsa_dir/vars .
