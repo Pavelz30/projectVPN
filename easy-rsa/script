@@ -8,7 +8,7 @@ function checkwork {
 		exit 1
 	fi
 
-	if [ $? -ne 0];
+	if [ $? -ne 0 ];
 	then
 		echo "Что-то пошло не так на этапе $1!"
 	else
@@ -18,11 +18,11 @@ function checkwork {
 
 path_to_easy_rsa_dir="~/projectVPN/easy-rsa"
 
-echo "Этап 1/4. Скачивание программ\n"
+echo "Этап 1/4. Скачивание программ"
 sudo apt-get update -y > /dev/null && sudo apt-get install easy-rsa -y > /dev/null
 checkwork 1
 
-echo "Этап 2/4. Настройка easy-rsa\n"
+echo "Этап 2/4. Настройка easy-rsa"
 mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/easy-rsa  && ./easyrsa init-pki
 checkwork 2
 
@@ -30,7 +30,7 @@ echo "Этап 3/4. Копирвоание конфиграции."
 cp $path_to_easy_rsa_dir/vars .
 checkwork 3
 
-echo "Этап 4/4. Создание CA.\nЗдесь вам предложат ввести кодовую фразу, которую впоследствии нужно
-вводить для получения доступа к вашему СA при совершении операций с cертификатами.\n"
+echo -e "Этап 4/4. Создание CA.\nЗдесь вам предложат ввести кодовую фразу, которую впоследствии нужно
+вводить для получения доступа к вашему СA при совершении операций с cертификатами."
 ./easyrsa --batch build-ca
 checkwork 4
