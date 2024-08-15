@@ -1,0 +1,63 @@
+#!/bin/bash
+
+function checkwork {
+	
+	code=$?
+
+	if [ $# -ne 1 ];
+	then
+		echo "Нужно передаеть один аргумент!"
+		exit 1
+	fi
+
+	if [ $code -ne 0 ];
+	then
+		echo -e "\e[0;31mЧто-то пошло не так на этапе $1!\e[0m"
+		exit 1
+	else
+		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
+	fi	
+}
+
+path_to_easy_rsa_dir=~/projectVPN/openVPN
+
+echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN и easy-rsa.\e[0m"
+sudo apt-get update -y > /dev/null && sudo apt-get install easy-rsa openvpn -y > /dev/null
+checkwork 1
+
+echo -e "\e[0;34mЭтап 2/10. Настройка easy-rsa.\e[0m"
+mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/easy-rsa 
+checkwork 2
+
+echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
+cp $path_to_easy_rsa_dir/vars .
+checkwork 3
+
+echo -e "\e[0;34mЭтап 4/5. Создание запроса на сертификат и ключа для сервера.\e[0m"
+./easyrsa --batch gen-req server nopass
+checkwork 4
+
+echo -e "\e[0;34mЭтап 5/10. Подпись сертификата удостоверяющим центром.
+Здесь потребуется ввести пароль, заданный при генерации корневого сертефиката СA.\e[0m"
+./easyrsa --batch sign-req server server
+checkwork 5
+
+echo -e "\e[0;34mЭтап 6/10 Генерация tls-ключа для дополнительной безопасности.\e[0m"
+openvpn --genkey --secret ta.key
+checkwork 6
+
+echo -e "\e[0;34mЭтап 7/10 Создание tls-скрипт ключа\e[0m"
+openvpn --genkey --secret ta.key
+checkwork 7
+
+echo -e "\e[0;34mЭтап 8/10. Копирование необходимых файлов в /etc/openvpn/server.\e[0m"
+sudo cp ./pki/private/server.key /etc/openvpn/server && \
+	sudo cp ./pki/ca.crt /etc/openvpn/server/ && \
+	sudo cp ./pki/issued/server.crt /etc/openvpn/server/ && \
+	sudo cp ./pki/ta.key /etc/openvpn/server/
+checkwork 8
+
+echo -e "\e[0;34mЭтап 9/10 Настройка openVPN и маршрутизации \e[0m"
+sudo cp $path_to_easy_rsa_dir/server.conf /etc/openvpn/server && \
+	
+checkwork 7

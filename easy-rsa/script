@@ -29,7 +29,6 @@ mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/
 checkwork 2
 
 echo -e "\e[0;34mЭтап 3/4. Копирвоание конфиграции.\e[0m"
-echo "Этап 3/4. Копирвоание конфиграции."
 cp $path_to_easy_rsa_dir/vars .
 checkwork 3
 
