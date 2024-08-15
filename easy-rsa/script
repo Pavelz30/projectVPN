@@ -18,7 +18,7 @@ function checkwork {
 		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
 	fi	
 }
-path_to_easy_rsa_dir="~/projectVPN/easy-rsa"
+path_to_easy_rsa_dir=~/projectVPN/easy-rsa
 
 echo -e "\e[0;34mЭтап 1/4. Скачивание программ\e[0m"
 sudo apt-get update -y > /dev/null && sudo apt-get install easy-rsa -y > /dev/null
