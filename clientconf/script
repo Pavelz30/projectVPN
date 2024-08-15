@@ -19,7 +19,7 @@ function checkwork {
 	fi	
 }
 
-path_to_easy_rsa_dir=~/projectVPN/clientconf
+path_to_dir=~/projectVPN/clientconf
 
 echo -e "\e[0;34mЭтап 1/10. Генерация сертификатов и ключей для пользователя $1.\e[0m"
 mkdir -p ~/clients/keys && \
@@ -29,48 +29,10 @@ mkdir -p ~/clients/keys && \
 	./easyrsa --batch sign-req client $1 && \
 	cp ~/easy-rsa/ta.key ~/clients/keys/ && \
 	sudo cp /etc/openvpn/server/ca.crt ~/clients/keys/
-	sudo chown $USER:$USER ~/clients/keys/*
 	mkdir -p ~/clients/files && \
-	cp $path_to_easy_rsa_dir/base.conf
+	cp $path_to_dir/base.conf  ~/clients/ && \
+	cp $path_to_dir/make_config.sh ~/clients/ $$ \
+	chmod 700 ~/clients/make_config.sh
+	sudo chown -r $USER:$USER ~/clients/*
 checkwork 1
 
-echo -e "\e[0;34mЭтап 2/10. Конфигарция клиента $1.\e[0m"
-mkdir -p ~/clients/files && \
-
-checkwork 2
-
-
-#echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
-#cp $path_to_easy_rsa_dir/vars .
-#checkwork 3
-
-echo -e "\e[0;34mЭтап 4/5. Создание запроса на сертификат и ключа для сервера.\e[0m"
-./easyrsa --batch gen-req server nopass
-checkwork 4
-
-echo -e "\e[0;34mЭтап 5/10. Подпись сертификата удостоверяющим центром.
-Здесь потребуется ввести пароль, заданный при генерации корневого сертефиката СA.\e[0m"
-./easyrsa --batch sign-req server server
-checkwork 5
-
-echo -e "\e[0;34mЭтап 6/10 Генерация tls-ключа для дополнительной безопасности.\e[0m"
-openvpn --genkey --secret ta.key
-checkwork 6
-
-echo -e "\e[0;34mЭтап 7/10. Копирование необходимых файлов в /etc/openvpn/server.\e[0m"
-sudo cp ./pki/private/server.key /etc/openvpn/server && \
-	sudo cp ./pki/ca.crt /etc/openvpn/server/ && \
-	sudo cp ./pki/issued/server.crt /etc/openvpn/server/ && \
-	sudo cp ./ta.key /etc/openvpn/server/
-checkwork 7
-
-echo -e "\e[0;34mЭтап 8/10 Настройка openVPN и маршрутизации.\e[0m"
-sudo cp $path_to_easy_rsa_dir/server.conf /etc/openvpn/server && \
-	sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf && \
-	sudo sysctl -p
-checkwork 8
-
-echo -e "\e[0;34mЭтап 9/10 Запуск openVPN.\e[0m"
-sudo systemctl -f enable openvpn-server@server.service && \
-	sudo systemctl start openvpn-server@server.service 
-checkwork 9
