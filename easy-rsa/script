@@ -2,13 +2,15 @@
 
 function checkwork {
 	
+	code=$?
+
 	if [ $# -ne 1 ];
 	then
 		echo "Нужно передаеть один аргумент!"
 		exit 1
 	fi
 
-	if [ $? -ne 0 ];
+	if [ $code -ne 0 ];
 	then
 		echo -e "\e[0;31mЧто-то пошло не так на этапе $1!\e[0m"
 		exit 1
