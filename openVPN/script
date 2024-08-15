@@ -22,7 +22,7 @@ function checkwork {
 path_to_easy_rsa_dir=~/projectVPN/openVPN
 
 echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN.\e[0m"
-sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null
+sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null && cd ~/easy-rsa
 checkwork 1
 
 #echo -e "\e[0;34mЭтап 2/10. Настройка easy-rsa.\e[0m"
