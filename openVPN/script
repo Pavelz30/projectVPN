@@ -25,14 +25,6 @@ echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN.\e[0m"
 sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null && cd ~/easy-rsa
 checkwork 1
 
-echo -e "\e[0;34mЭтап 2/10. Настройка iptables.\e[0m"
-sudo apt-get install iptables -y > /dev/null && \
-	sudo chmod +x iptables.sh && \
-	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}') && \ 
-	proto=$(cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
-	port=$(cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
-	sudo $path_to_easy_rsa_dir/iptables.sh $int $proto $port	
-checkwork 2
 
 #echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
 #cp $path_to_easy_rsa_dir/vars .
@@ -63,6 +55,16 @@ sudo cp $path_to_easy_rsa_dir/server.conf /etc/openvpn/server && \
 	sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf && \
 	sudo sysctl -p
 checkwork 8
+
+
+echo -e "\e[0;34mЭтап 2/10. Настройка iptables.\e[0m"
+sudo apt-get install iptables -y > /dev/null && \
+	sudo chmod +x iptables.sh && \
+	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}') && \ 
+	proto=$(cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
+	port=$(cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
+	sudo $path_to_easy_rsa_dir/iptables.sh $int $proto $port	
+checkwork 2
 
 echo -e "\e[0;34mЭтап 9/10 Запуск openVPN.\e[0m"
 sudo systemctl -f enable openvpn-server@server.service && \
