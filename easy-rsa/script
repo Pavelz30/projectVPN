@@ -4,19 +4,18 @@ function checkwork {
 	
 	if [ $# -ne 1 ];
 	then
-		echo "Нужно переаеть один аргумент!"
+		echo "Нужно передаеть один аргумент!"
 		exit 1
 	fi
 
 	if [ $? -ne 0 ];
 	then
-		echo "Что-то пошло не так на этапе $1!"
+		echo -e "\e[0;31mЧто-то пошло не так на этапе $1!\e[0m"
 		exit 1
 	else
-		echo -e "Этап $1 прошел успешно!\n"
+		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
 	fi	
 }
-
 path_to_easy_rsa_dir="~/projectVPN/easy-rsa"
 
 echo "Этап 1/4. Скачивание программ"
