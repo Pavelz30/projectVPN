@@ -11,8 +11,9 @@ function checkwork {
 	if [ $? -ne 0 ];
 	then
 		echo "Что-то пошло не так на этапе $1!"
+		exit 1
 	else
-		echo "Этап $1 прошел успешно!"
+		echo -e "Этап $1 прошел успешно!\n"
 	fi	
 }
 
