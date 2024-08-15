@@ -21,17 +21,17 @@ function checkwork {
 
 path_to_easy_rsa_dir=~/projectVPN/openVPN
 
-echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN и easy-rsa.\e[0m"
-sudo apt-get update -y > /dev/null && sudo apt-get install easy-rsa openvpn -y > /dev/null
+echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN.\e[0m"
+sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null
 checkwork 1
 
-echo -e "\e[0;34mЭтап 2/10. Настройка easy-rsa.\e[0m"
-mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/easy-rsa 
-checkwork 2
+#echo -e "\e[0;34mЭтап 2/10. Настройка easy-rsa.\e[0m"
+#mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/easy-rsa 
+#checkwork 2
 
-echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
-cp $path_to_easy_rsa_dir/vars .
-checkwork 3
+#echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
+#cp $path_to_easy_rsa_dir/vars .
+#checkwork 3
 
 echo -e "\e[0;34mЭтап 4/5. Создание запроса на сертификат и ключа для сервера.\e[0m"
 ./easyrsa --batch gen-req server nopass
@@ -46,18 +46,20 @@ echo -e "\e[0;34mЭтап 6/10 Генерация tls-ключа для допо
 openvpn --genkey --secret ta.key
 checkwork 6
 
-echo -e "\e[0;34mЭтап 7/10 Создание tls-скрипт ключа\e[0m"
-openvpn --genkey --secret ta.key
-checkwork 7
-
-echo -e "\e[0;34mЭтап 8/10. Копирование необходимых файлов в /etc/openvpn/server.\e[0m"
+echo -e "\e[0;34mЭтап 7/10. Копирование необходимых файлов в /etc/openvpn/server.\e[0m"
 sudo cp ./pki/private/server.key /etc/openvpn/server && \
 	sudo cp ./pki/ca.crt /etc/openvpn/server/ && \
 	sudo cp ./pki/issued/server.crt /etc/openvpn/server/ && \
-	sudo cp ./pki/ta.key /etc/openvpn/server/
+	sudo cp ./ta.key /etc/openvpn/server/
+checkwork 7
+
+echo -e "\e[0;34mЭтап 8/10 Настройка openVPN и маршрутизации.\e[0m"
+sudo cp $path_to_easy_rsa_dir/server.conf /etc/openvpn/server && \
+	sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf && \
+	sudo sysctl -p
 checkwork 8
 
-echo -e "\e[0;34mЭтап 9/10 Настройка openVPN и маршрутизации \e[0m"
-sudo cp $path_to_easy_rsa_dir/server.conf /etc/openvpn/server && \
-	
-checkwork 7
+echo -e "\e[0;34mЭтап 9/10 Запуск openVPN.\e[0m"
+sudo systemctl -f enable openvpn-server@server.service && \
+	sudo systemctl start openvpn-server@server.service 
+checkwork 9
