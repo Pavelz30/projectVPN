@@ -1,0 +1,10 @@
+#!/bin/bash
+
+git clone 
+
+sudo apt-get update -y && sudo apt-get install easy-rsa -y
+
+mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ && cd ~/easy-rsa
+
+./easyrsa init-pki
+
