@@ -59,10 +59,10 @@ checkwork 8
 
 echo -e "\e[0;34mЭтап 2/10. Настройка iptables.\e[0m"
 sudo apt-get install iptables -y > /dev/null && \
-	sudo chmod +x $path_to_easy_rsa_dir/iptables.sh && \
-	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}') && \ 
+	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}') && \
 	proto=$(cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
 	port=$(cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
+	sudo chmod +x $path_to_easy_rsa_dir/iptables.sh && \
 	sudo $path_to_easy_rsa_dir/iptables.sh $int $proto $port	
 checkwork 2
 
