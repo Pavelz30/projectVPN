@@ -1,10 +1,36 @@
 #!/bin/bash
 
-git clone 
+function checkwork {
+	
+	if [ $# -ne 1 ];
+	then
+		echo "Нужно переаеть один аргумент!"
+		exit 1
+	fi
 
-sudo apt-get update -y && sudo apt-get install easy-rsa -y
+	if [ $? -ne 0];
+	then
+		echo "Что-то пошло не так на этапе $1!"
+	else
+		echo "Этап $1 прошел успешно!"
+	fi	
+}
 
-mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ && cd ~/easy-rsa
+path_to_easy_rsa_dir="~/projectVPN/easy-rsa"
 
-./easyrsa init-pki
+echo "Этап 1/4. Скачивание программ\n"
+sudo apt-get update -y > /dev/null && sudo apt-get install easy-rsa -y > /dev/null
+checkwork 1
 
+echo "Этап 2/4. Настройка easy-rsa\n"
+mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/easy-rsa  && ./easyrsa init-pki
+checkwork 2
+
+echo "Этап 3/4. Копирвоание конфиграции."
+cp $path_to_easy_rsa_dir/vars .
+checkwork 3
+
+echo "Этап 4/4. Создание CA.\nЗдесь вам предложат ввести кодовую фразу, которую впоследствии нужно
+вводить для получения доступа к вашему СA при совершении операций с cертификатами.\n"
+./easyrsa --batch build-ca
+checkwork 4

@@ -98,7 +98,7 @@ set_var EASYRSA_DN	"org"
 #       in these "Organizational fields" by Easy-RSA:
 #       back-tick (`)
 #
-set_var EASYRSA_REQ_COUNTRY	"RUS"
+set_var EASYRSA_REQ_COUNTRY	"RU"
 set_var EASYRSA_REQ_PROVINCE	"Moscow"
 set_var EASYRSA_REQ_CITY	"Moscow City"
 set_var EASYRSA_REQ_ORG	        "VseTop"
