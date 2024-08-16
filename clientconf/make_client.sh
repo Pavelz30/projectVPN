@@ -35,8 +35,7 @@ cp pki/private/$1.key ~/clients/keys/ && \
 	sudo cp /etc/openvpn/server/ca.crt ~/clients/keys/ && \
 	cp pki/issued/$1.crt ~/clients/keys/ && \
 	cp $path_to_clientconf_dir/base.conf  ~/clients/ && \
-	sed -r "s/remote ([0-9]{1,3}[\.]){3}[0-9]{1,3} 1194/remote $(curl ifconfig.co > /dev/null) 1194/" \
-	~/clients/base.conf >  ~/clients/base.conf
+	sed -i -r "s/remote ([0-9]{1,3}[\.]){3}[0-9]{1,3} 1194/remote $(curl -s ifconfig.co) 1194/" ~/clients/base.conf
 	cp $path_to_clientconf_dir/make_config.sh ~/clients/ && \
 	sudo chown -R $USER:$USER ~/clients/*
 checkwork 2
