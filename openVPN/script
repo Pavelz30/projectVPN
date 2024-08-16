@@ -19,54 +19,48 @@ function checkwork {
 	fi	
 }
 
-path_to_easy_rsa_dir=~/projectVPN/openVPN
+path_to_openvpn_dir=~/projectVPN/openVPN
 
-echo -e "\e[0;34mЭтап 1/10. Скачивание openVPN.\e[0m"
+echo -e "\e[0;34mЭтап 1/8. Скачивание openVPN.\e[0m"
 sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null && cd ~/easy-rsa
 checkwork 1
 
+echo -e "\e[0;34mЭтап 2/8. Создание запроса на сертификат и ключ для сервера.\e[0m"
+./easyrsa --batch gen-req server nopass 
+checkwork 2
 
-#echo -e "\e[0;34mЭтап 3/10. Копирвоание конфиграции клиента.\e[0m"
-#cp $path_to_easy_rsa_dir/vars .
-#checkwork 3
-
-echo -e "\e[0;34mЭтап 4/5. Создание запроса на сертификат и ключа для сервера.\e[0m"
-./easyrsa --batch gen-req server nopass
-checkwork 4
-
-echo -e "\e[0;34mЭтап 5/10. Подпись сертификата удостоверяющим центром.
+echo -e "\e[0;34mЭтап 3/8. Подпись сертификата удостоверяющим центром.
 Здесь потребуется ввести пароль, заданный при генерации корневого сертефиката СA.\e[0m"
 ./easyrsa --batch sign-req server server
-checkwork 5
+checkwork 3
 
-echo -e "\e[0;34mЭтап 6/10 Генерация tls-ключа для дополнительной безопасности.\e[0m"
+echo -e "\e[0;34mЭтап 4/8 Генерация tls-ключа для дополнительной безопасности.\e[0m"
 openvpn --genkey --secret ta.key
-checkwork 6
+checkwork 4
 
-echo -e "\e[0;34mЭтап 7/10. Копирование необходимых файлов в /etc/openvpn/server.\e[0m"
+echo -e "\e[0;34mЭтап 5/8. Копирование необходимых файлов в /etc/openvpn/server.\e[0m"
 sudo cp ./pki/private/server.key /etc/openvpn/server && \
 	sudo cp ./pki/ca.crt /etc/openvpn/server/ && \
 	sudo cp ./pki/issued/server.crt /etc/openvpn/server/ && \
 	sudo cp ./ta.key /etc/openvpn/server/
-checkwork 7
+checkwork 5
 
-echo -e "\e[0;34mЭтап 8/10 Настройка openVPN и маршрутизации.\e[0m"
-sudo cp $path_to_easy_rsa_dir/server.conf /etc/openvpn/server && \
+echo -e "\e[0;34mЭтап 6/8 Настройка openVPN и маршрутизации.\e[0m"
+sudo cp $path_to_openvpn_dir/server.conf /etc/openvpn/server && \
 	sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf && \
 	sudo sysctl -p
-checkwork 8
+checkwork 6
 
-
-echo -e "\e[0;34mЭтап 2/10. Настройка iptables.\e[0m"
+echo -e "\e[0;34mЭтап 7/8. Настройка iptables.\e[0m"
 sudo apt-get install iptables -y > /dev/null && \
-	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}') && \
-	proto=$(cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
-	port=$(cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
-	sudo chmod +x $path_to_easy_rsa_dir/iptables.sh && \
-	sudo $path_to_easy_rsa_dir/iptables.sh $int $proto $port	
-checkwork 2
+	int=$(ip a | grep -e "eth.:" | awk -F: '{print $2}' | sed 's/ //') && \
+	proto=$(sudo cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
+	port=$(sudo cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
+	sudo chmod +x $path_to_openvpn_dir/iptables.sh && \
+	sudo $path_to_openvpn_dir/iptables.sh $int $proto $port && sudo iptables-save	
+checkwork 7
 
-echo -e "\e[0;34mЭтап 9/10 Запуск openVPN.\e[0m"
+echo -e "\e[0;34mЭтап 8/8 Запуск openVPN.\e[0m"
 sudo systemctl -f enable openvpn-server@server.service && \
 	sudo systemctl start openvpn-server@server.service 
-checkwork 9
+checkwork 8

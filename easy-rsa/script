@@ -18,9 +18,10 @@ function checkwork {
 		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
 	fi	
 }
+
 path_to_easy_rsa_dir=~/projectVPN/easy-rsa
 
-echo -e "\e[0;34mЭтап 1/4. Скачивание программ.\e[0m"
+echo -e "\e[0;34m\nЭтап 1/4. Установка easy-rsa.\e[0m"
 sudo apt-get update -y > /dev/null && sudo apt-get install easy-rsa -y > /dev/null
 checkwork 1
 
@@ -28,7 +29,7 @@ echo -e "\e[0;34mЭтап 2/4. Настройка easy-rsa.\e[0m"
 mkdir ~/easy-rsa && ln -s /usr/share/easy-rsa/* ~/easy-rsa/ > /dev/null && cd ~/easy-rsa  && ./easyrsa init-pki
 checkwork 2
 
-echo -e "\e[0;34mЭтап 3/4. Копирвоание конфиграции.\e[0m"
+echo -e "\e[0;34mЭтап 3/4. Копирвоание конфиграции vars для CA.\e[0m"
 cp $path_to_easy_rsa_dir/vars .
 checkwork 3
 
