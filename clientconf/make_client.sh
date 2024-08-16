@@ -44,5 +44,5 @@ echo -e "\e[0;34mЭтап 3/3. Создание сертификата для к
 cd ~/clients && \
 	./make_config.sh $1
 checkwork 3
-echo -e "\nСертификат клиента '$1' -> ~/clients/files/$1.ovpn.\nПерешлите его клиенту вместе с ключом ~/easy-rsa/ta.key." 
+echo -e "\nСертификат клиента '$1' -> ~/clients/files/$1.ovpn.\nПерешлите его клиенту вместе с ключом ~/clients/keys/ta.key." 
 
