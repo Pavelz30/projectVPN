@@ -35,7 +35,7 @@ cp pki/private/$1.key ~/clients/keys/ && \
 	sudo cp /etc/openvpn/server/ca.crt ~/clients/keys/ && \
 	cp pki/issued/$1.crt ~/clients/keys/ && \
 	cp $path_to_clientconf_dir/base.conf  ~/clients/ && \
-        sed -ir "s/remote ([0-9]{1,3}[\.]){3}[0-9]{1,3} 1194/remote $(curl ifconfig.co > /dev/null) 1194/" ~/clients/base.conf && \
+        sed -r -i "s/remote ([0-9]{1,3}[\.]){3}[0-9]{1,3} 1194/remote $(curl ifconfig.co > /dev/null) 1194/" ~/clients/base.conf && \
 	cp $path_to_clientconf_dir/make_config.sh ~/clients/ && \
 	sudo chown -R $USER:$USER ~/clients/*
 checkwork 2
@@ -44,5 +44,5 @@ echo -e "\e[0;34mЭтап 3/3. Создание сертификата для к
 cd ~/clients && \
 	./make_config.sh $1
 checkwork 3
-echo -e "\nСертификат колента '$1' -> ~/clients/files/$1.ovpn.\nПерешлите его клиенту вместе с ключом ta.key." 
+echo -e "\nСертификат клиента '$1' -> ~/clients/files/$1.ovpn.\nПерешлите его клиенту вместе с ключом ~/easy-rsa/ta.key." 
 
