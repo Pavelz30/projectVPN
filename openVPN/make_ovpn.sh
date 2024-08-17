@@ -128,5 +128,5 @@ else
 	echo -e "\nПередайте запрос на полечение сертификата в Удостоверяющий Центр (CA)."
         echo -e "Запросите у удостоверяющего центра ca.crt и server.crt."
 	echo -e "\e[0;33mПоложите полученные файлы в /etc/openvpn/server/ 
-Перезапустите сервис openvpn: sudo systemctl restart openvpn-server@server.service"
+Запустите сервис openvpn: sudo systemctl start openvpn-server@server.service"
 fi
