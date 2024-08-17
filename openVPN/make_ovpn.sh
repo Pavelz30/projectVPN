@@ -23,7 +23,7 @@ if [ "$mode" == "along" ];
 then
        	max=9
 else
-       	max=7
+       	max=8
 fi
 
 function checkwork {
@@ -105,12 +105,14 @@ sudo apt-get install iptables -y > /dev/null && \
 checkwork $cur
 cur=$(( cur + 1 ))
 
-echo -e "\e[0;35mЭтап $cur/$max Запуск openVPN.\e[0m"
-sudo systemctl -f enable openvpn-server@server.service && \
-	sudo systemctl start openvpn-server@server.service 
-checkwork $cur
-cur=$(( cur + 1 ))
 
+echo -e "\e[0;35mЭтап $cur/$max Запуск openVPN.\e[0m"
+sudo systemctl -f enable openvpn-server@server.service
+if [ "$mode" == "along" ];
+then
+        sudo systemctl start openvpn-server@server.service
+fi
+checkwork $cur
 
 echo -e "\e[0;32mУстановка и настройка openvpn прошла успешно!\n\e[0m"
 echo -e "\e[0;32mДополнительный ключ для обеспечения защиты -> ~/easy-rsa/ta.key\e[0m"
@@ -120,10 +122,11 @@ echo -e "\e[0;33mНе передавайте никому секретный к�
 
 if [ $mode == "along" ];
 then
+	
         echo -e "\e[0;32m\nПодписанный сертификат для сервера -> ~/easy-rsa/pki/issued/server.crt\e[0m"
 else
 	echo -e "\nПередайте запрос на полечение сертификата в Удостоверяющий Центр (CA)."
         echo -e "Запросите у удостоверяющего центра ca.crt и server.crt."
 	echo -e "\e[0;33mПоложите полученные файлы в /etc/openvpn/server/ 
-	Перезапустите сервис openvpn: sudo systemctl restart openvpn-server@server.service"
+Перезапустите сервис openvpn: sudo systemctl restart openvpn-server@server.service"
 fi
