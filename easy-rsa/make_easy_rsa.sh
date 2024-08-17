@@ -40,7 +40,7 @@ echo -e "\e[0;35mЭтап 2/4. Настройка easy-rsa.\e[0m"
 mkdir -p ~/easy-rsa && ln -sf /usr/share/easy-rsa/* ~/easy-rsa/ && cd ~/easy-rsa  && ./easyrsa init-pki
 checkwork 2
 
-echo -e "\e[0;35mЭтап 3/4. Копирвоание конфиграции vars для CA.\e[0m"
+echo -e "\e[0;35mЭтап 3/4. Копирование конфиграции vars для CA.\e[0m"
 cp $path_to_easy_rsa_dir/vars .
 checkwork 3
 

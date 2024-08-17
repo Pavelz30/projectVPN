@@ -57,7 +57,7 @@ else
 	cd ~/easy-rsa
 fi
 
-echo -e "\e[0;35mЭтап $cur/$max. Создание запроса на сертификат и ключ для сервера.\e[0m"
+echo -e "\e[0;35mЭтап $cur/$max. Создание запроса на сертификат и ключa для сервера.\e[0m"
 ./easyrsa --batch gen-req server nopass 
 checkwork $cur
 cur=$(( cur + 1 ))
@@ -70,12 +70,12 @@ cur=$(( cur + 1 ))
 if [ "$mode" == "along" ];
 then
 	echo -e "\e[0;35mЭтап $cur/$max. Подпись сертификата удостоверяющим центром.
-	Здесь потребуется ввести пароль, заданный при генерации корневого сертефиката СA.\e[0m"
+Здесь потребуется ввести фразу, заданную при генерации корневого сертификата СA.\e[0m"
 	./easyrsa --batch sign-req server server
 	checkwork $cur
 	cur=$(( cur + 1 ))
 
-	echo -e "\e[0;35mЭтап $cur/$max. Копирование сертификата CA и сертификата сервера в /etc/openvpn/server/\e[0m"
+	echo -e "\e[0;35mЭтап $cur/$max. Копирование сертификата CA и сертификата сервера в /etc/openvpn/server.\e[0m"
 	sudo cp ./pki/ca.crt /etc/openvpn/server/ && \
 	sudo cp ./pki/issued/server.crt /etc/openvpn/server/
 	checkwork $cur
@@ -88,7 +88,7 @@ sudo cp ./pki/private/server.key /etc/openvpn/server && \
 checkwork $cur
 cur=$(( cur + 1 ))
 
-echo -e "\e[0;35mЭтап $cur/$cur Настройка openVPN и маршрутизации.\e[0m"
+echo -e "\e[0;35mЭтап $cur/$max Настройка openVPN и маршрутизации.\e[0m"
 sudo cp $path_to_openvpn_dir/server.conf /etc/openvpn/server && \
 	sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf && \
 	sudo sysctl -p
