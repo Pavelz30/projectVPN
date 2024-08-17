@@ -1,25 +1,38 @@
 #!/bin/bash
 
+path_to_openvpn_dir=~/projectVPN/openVPN
+place=$1
+
+
 function checkwork {
 	
 	code=$?
 
-	if [ $# -ne 1 ];
-	then
-		echo "Нужно передаеть один аргумент!"
-		exit 1
-	fi
-
 	if [ $code -ne 0 ];
 	then
-		echo -e "\e[0;31mЧто-то пошло не так на этапе $1!\e[0m"
-		exit 1
+		echo -e "\e[0;31mOшибка на этапе $1!\e[0m"
+                case $1 in
+                        1)
+                                echo "Не удалось установить openvpn. Проверьте достпность установки пакетов!"
+                                ;;
+                        2)
+                                echo "Проблема при настройке easy-rsa!"
+                                ;;
+                        3)
+                                echo "Проблема при копировании файла из $path_to_easy_rsa_dir/vars в ~/easy-rsa!"
+                                ;;
+                        4)
+                                echo "Пробелма при создании центра сертификации (CA)"
+                                ;;
+                        *)
+                                ;;
+                esac
+                exit 1
 	else
 		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
 	fi	
 }
 
-path_to_openvpn_dir=~/projectVPN/openVPN
 
 echo -e "\e[0;34m\nЭтап 1/8. Скачивание openVPN.\e[0m"
 sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null && cd ~/easy-rsa
@@ -29,10 +42,14 @@ echo -e "\e[0;34mЭтап 2/8. Создание запроса на сертиф
 ./easyrsa --batch gen-req server nopass 
 checkwork 2
 
-echo -e "\e[0;34mЭтап 3/8. Подпись сертификата удостоверяющим центром.
-Здесь потребуется ввести пароль, заданный при генерации корневого сертефиката СA.\e[0m"
-./easyrsa --batch sign-req server server
-checkwork 3
+if [ $plcae == "along" ];
+then
+
+	echo -e "\e[0;34mЭтап 3/8. Подпись сертификата удостоверяющим центром.
+	Здесь потребуется ввести пароль, заданный при генерации корневого сертефиката СA.\e[0m"
+	./easyrsa --batch sign-req server server
+	checkwork 3
+
 
 echo -e "\e[0;34mЭтап 4/8 Генерация tls-ключа для дополнительной безопасности.\e[0m"
 openvpn --genkey --secret ta.key
