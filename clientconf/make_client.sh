@@ -18,16 +18,20 @@ function checkwork {
 		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
 	fi	
 }
+if [ $# -ne 1 ];
+then
+	echo "Требуется один аргумент -- название клиента!"
+fi
 
 if [ ! -f ~/easy-rsa/ta.key ];
 then
 	echo "~/easy-rsa/ta.key не обнаружен.\nЗапросите ключ у сервера openVPN!"
-	exit 0
+	exit 1
 fi
 
 path_to_clientconf_dir=~/projectVPN/clientconf
 
-echo -e "\e[0;34m\nЭтап 1/3. Генерация сертификатов и ключей для пользователя $1.\e[0m"
+echo -e "\e[0;35\nЭтап 1/3. Генерация сертификатов и ключей для пользователя $1.\e[0m"
 mkdir -p ~/clients/keys && \
 	cd ~/easy-rsa && \
 	./easyrsa --batch gen-req $1 nopass && \
@@ -35,7 +39,7 @@ mkdir -p ~/clients/keys && \
 	mkdir -p ~/clients/files
 checkwork 1
 
-echo -e "\e[0;34mЭтап 2/3. Копирование файлов.\e[0m"
+echo -e "\e[0;35mЭтап 2/3. Копирование файлов.\e[0m"
 cp pki/private/$1.key ~/clients/keys/ && \
 	cp ta.key ~/clients/keys/ && \
 	sudo cp ~/easy-rsa/pki/ca.crt ~/clients/keys/ && \
@@ -46,7 +50,7 @@ cp pki/private/$1.key ~/clients/keys/ && \
 	sudo chown -R $USER:$USER ~/clients/*
 checkwork 2
 
-echo -e "\e[0;34mЭтап 3/3. Создание сертификата для клиента $1.\e[0m"
+echo -e "\e[0;35mЭтап 3/3. Создание сертификата для клиента $1.\e[0m"
 cd ~/clients && \
 	./make_config.sh $1
 checkwork 3
