@@ -21,17 +21,18 @@ function checkwork {
 if [ $# -ne 1 ];
 then
 	echo "Требуется один аргумент -- название клиента!"
+	echo 1
 fi
 
 if [ ! -f ~/easy-rsa/ta.key ];
 then
-	echo "~/easy-rsa/ta.key не обнаружен.\nЗапросите ключ у сервера openVPN!"
+	echo -e "~/easy-rsa/ta.key не обнаружен.\nЗапросите ключ у сервера openVPN!"
 	exit 1
 fi
 
 path_to_clientconf_dir=~/projectVPN/clientconf
 
-echo -e "\e[0;35\nЭтап 1/3. Генерация сертификатов и ключей для пользователя $1.\e[0m"
+echo -e "\e[0;35m\nЭтап 1/3. Генерация сертификатов и ключей для пользователя $1.\e[0m"
 mkdir -p ~/clients/keys && \
 	cd ~/easy-rsa && \
 	./easyrsa --batch gen-req $1 nopass && \
