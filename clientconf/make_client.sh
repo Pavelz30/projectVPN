@@ -19,6 +19,12 @@ function checkwork {
 	fi	
 }
 
+if [ ! -f ~/easy-rsa/ta.key ];
+then
+	echo "~/easy-rsa/ta.key не обнаружен.\nЗапросите ключ у сервера openVPN!"
+	exit 0
+fi
+
 path_to_clientconf_dir=~/projectVPN/clientconf
 
 echo -e "\e[0;34m\nЭтап 1/3. Генерация сертификатов и ключей для пользователя $1.\e[0m"
