@@ -40,8 +40,8 @@ function checkwork {
 }
 
 
-echo -e "\e[0;35m\nЭтап $cur/$max. Установка openVPN.\e[0m"
-sudo apt-get update -y > /dev/null && sudo apt-get install openvpn -y > /dev/null
+echo -e "\e[0;35m\nЭтап $cur/$max. Установка openVPN и iptables-persistent.\e[0m"
+sudo apt-get update -y > /dev/null && sudo apt-get install openvpn iptables-persistent -y > /dev/null
 checkwork $cur
 cur=$(( cur + 1 ))
 
@@ -101,12 +101,12 @@ sudo apt-get install iptables -y > /dev/null && \
 	proto=$(sudo cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
 	port=$(sudo cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
 	sudo chmod +x $path_to_openvpn_dir/iptables.sh && \
-	sudo $path_to_openvpn_dir/iptables.sh $int $proto $port && sudo iptables-save	
+	sudo $path_to_openvpn_dir/iptables.sh $int $proto $port && sudo netfilter-persistent reload
 checkwork $cur
 cur=$(( cur + 1 ))
 
 
-echo -e "\e[0;35mЭтап $cur/$max Запуск openVPN.\e[0m"
+echo -e "\e[0;35mЭтап $cur/$max. Запуск openVPN.\e[0m"
 sudo systemctl -f enable openvpn-server@server.service
 if [ "$mode" == "along" ];
 then
