@@ -40,8 +40,12 @@ function checkwork {
 }
 
 
-echo -e "\e[0;35m\nЭтап $cur/$max. Установка openVPN и iptables-persistent.\e[0m"
-sudo apt-get update -y > /dev/null && sudo apt-get install openvpn iptables-persistent -y > /dev/null
+echo -e "\e[0;35m\nЭтап $cur/$max. Установка openVPN.\e[0m"
+
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+
+sudo apt-get update -y > /dev/null && sudo apt-get install iptables-persistent openvpn -y > /dev/null
 checkwork $cur
 cur=$(( cur + 1 ))
 
