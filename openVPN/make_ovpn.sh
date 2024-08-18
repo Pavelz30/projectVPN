@@ -40,7 +40,7 @@ function checkwork {
 }
 
 
-echo -e "\e[0;35m\nЭтап $cur/$max. Установка openVPN.\e[0m"
+echo -e "\e[0;35m\nЭтап $cur/$max. Установка openVPN и iptables-persistent.\e[0m"
 
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
@@ -105,7 +105,8 @@ sudo apt-get install iptables -y > /dev/null && \
 	proto=$(sudo cat /etc/openvpn/server/server.conf | grep ^proto | awk '{print $2}') && \
 	port=$(sudo cat /etc/openvpn/server/server.conf | grep ^port | awk '{print $2}') && \
 	sudo chmod +x $path_to_openvpn_dir/iptables.sh && \
-	sudo $path_to_openvpn_dir/iptables.sh $int $proto $port && sudo netfilter-persistent reload
+	sudo $path_to_openvpn_dir/iptables.sh $int $proto $port && \
+       	sudo netfilter-persistent reload && sudo netfilter-persistent save
 checkwork $cur
 cur=$(( cur + 1 ))
 
