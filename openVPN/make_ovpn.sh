@@ -3,21 +3,21 @@
 path_to_openvpn_dir=~/projectVPN/openVPN
 max=-1
 cur=1
+mode="along"
+#echo -ne "\nВведите 'along', если сервис openvpn будет на машине с центром сертификации, иначе введите 'none': "
 
-echo -ne "\nВведите 'along', если сервис openvpn будет на машине с центром сертификации, иначе введите 'none': "
+#read mode
 
-read mode
-
-while [ "$mode" != "along" ];
-do
-	if [ "$mode" == "none" ];
-       	then
-	       break
-      	else
-		echo -e "\e[0;31mНеправльный ввод!\e[0m"
-		exit 1
-	fi		
-done
+#while [ "$mode" != "along" ];
+#do
+#	if [ "$mode" == "none" ];
+#       	then
+#	       break
+#      	else
+#		echo -e "\e[0;31mНеправльный ввод!\e[0m"
+#		exit 1
+#	fi		
+#done
 
 if [ "$mode" == "along" ];
 then

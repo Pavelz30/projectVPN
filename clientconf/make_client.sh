@@ -1,20 +1,20 @@
 #!/bin/bash
 
+mode="along"
+#echo -ne "\nВведите 'along', если сервис openvpn будет на машине с центром сертификации, иначе введите 'none': "
 
-echo -ne "\nВведите 'along', если сервис openvpn будет на машине с центром сертификации, иначе введите 'none': "
+#read mode
 
-read mode
-
-while [ "$mode" != "along" ];
-do
-        if [ "$mode" == "none" ];
-        then
-               break
-        else
-                echo -e "\e[0;31mНеправльный ввод!\e[0m"
-                exit 1
-        fi
-done
+#while [ "$mode" != "along" ];
+#do
+#        if [ "$mode" == "none" ];
+#        then
+#               break
+#        else
+#                echo -e "\e[0;31mНеправльный ввод!\e[0m"
+#                exit 1
+#        fi
+#done
 
 function checkwork {
 	
@@ -34,6 +34,7 @@ function checkwork {
 		echo -e "\e[0;32mЭтап $1 прошел успешно!\n\e[0m"
 	fi	
 }
+
 if [ $# -ne 1 ];
 then
 	echo "Требуется один аргумент -- название клиента!"
