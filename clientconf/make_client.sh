@@ -1,5 +1,21 @@
 #!/bin/bash
 
+
+echo -ne "\nВведите 'along', если сервис openvpn будет на машине с центром сертификации, иначе введите 'none': "
+
+read mode
+
+while [ "$mode" != "along" ];
+do
+        if [ "$mode" == "none" ];
+        then
+               break
+        else
+                echo -e "\e[0;31mНеправльный ввод!\e[0m"
+                exit 1
+        fi
+done
+
 function checkwork {
 	
 	code=$?
@@ -46,7 +62,7 @@ cp pki/private/$1.key ~/clients/keys/ && \
 	sudo cp ~/easy-rsa/pki/ca.crt ~/clients/keys/ && \
 	cp pki/issued/$1.crt ~/clients/keys/ && \
 	cp $path_to_clientconf_dir/base.conf  ~/clients/ && \
-	sed -i -r "s/remote ([0-9]{1,3}[\.]){3}[0-9]{1,3} 1194/remote $(curl -s ifconfig.co) 1194/" ~/clients/base.conf && \
+	[ "$mode" == "along" ] && sed -i -r "s/remote ([0-9]{1,3}[\.]){3}[0-9]{1,3} 1194/remote $(curl -s ifconfig.co) 1194/" ~/clients/base.conf
 	cp $path_to_clientconf_dir/make_config.sh ~/clients/ && \
 	sudo chown -R $USER:$USER ~/clients/*
 checkwork 2
