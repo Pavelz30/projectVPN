@@ -32,7 +32,7 @@ then
 			/var/lib/prometheus/ \
 			/etc/systemd/system/prometheus.service \
 			/usr/local/bin/prometheus/{prometheus,promtool}
-		sudo systemctl daemon-reload
+		sudo systemctl daemon-reload && sudo systemctl reset-failed
 	else
 		echo -e "\nУстраните конфликтующие файлы и перезапустите скрипт!"
 		echo -e "/etc/prometheus/\n/var/lib/prometheus/\n/etc/systemd/system/prometheus.service\n/usr/local/bin/prometheus/{prometheus,promtool}"
@@ -67,4 +67,4 @@ fi
 
 echo -e "\nКонфигурация Prometheus -> $etcdir"
 echo -e "Systemd-unit для Prometheus -> $systemddir/prometheus.service"
-echo -e "Используй 'sudo systemctl status prometheus.service' для проерки состояния сервиса!"
+echo -e "Используй 'sudo systemctl status prometheus.service' для проверки состояния сервиса!"
