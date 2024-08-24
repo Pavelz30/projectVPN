@@ -28,14 +28,14 @@ then
 	read var
 	if [ "$var" == "force" ];
 	then
-		sudo rm -rf /etc/prometheus/ \
-			/var/lib/prometheus/ \
-			/etc/systemd/system/prometheus.service \
-			/usr/local/bin/prometheus/{prometheus,promtool}
+		sudo rm -rf $etcdir \
+			$libdir \
+			$systemddir/prometheus.service \
+			/usr/local/bin/{prometheus,promtool}
 		sudo systemctl daemon-reload && sudo systemctl reset-failed
 	else
 		echo -e "\nУстраните конфликтующие файлы и перезапустите скрипт!"
-		echo -e "/etc/prometheus/\n/var/lib/prometheus/\n/etc/systemd/system/prometheus.service\n/usr/local/bin/prometheus/{prometheus,promtool}"
+		echo -e "$etcdir\n$libdir\n$systemddir/prometheus.service\n/usr/local/bin/{prometheus,promtool}"
 		exit 1
 	fi
 fi
@@ -58,7 +58,7 @@ sudo chown -R prometheus:prometheus $etcdir $libdir && \
 	sudo chown prometheus:prometheus /usr/local/bin/{prometheus,promtool}
 
 sudo cp $projectdir/prometheus.service $systemddir/ 
-sudo systemctl enable prometheus.service > /dev/null && sudo systemctl start prometheus.service > /dev/null
+sudo systemctl enable prometheus.service &> /dev/null && sudo systemctl start prometheus.service &> /dev/null
 
 if [ $? -eq 0 ];
 then
