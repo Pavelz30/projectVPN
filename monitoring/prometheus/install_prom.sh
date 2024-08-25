@@ -22,7 +22,7 @@ then
 	exit 1
 fi
 
-if [ -d $etcdir ] || [ -d $libdir ] || [ -f /usr/local/bin/prometheus ] || [ -f /etc/systemd/system/prometheus.service ];
+if [ -d $etcdir ] || [ -d $libdir ] || [ -f /usr/local/bin/prometheus ] || [ -f $systemddir/prometheus.service ];
 then
 	echo -n "Возможно, у вас уже установлен Prometheus. Введите 'force' чтобы удалить все конфликтующие файлы, иначе 'none': "
 	read var
@@ -30,7 +30,6 @@ then
 	then
 		sudo rm -rf $etcdir \
 			$libdir \
-			$systemddir/prometheus.service \
 			/usr/local/bin/{prometheus,promtool}
 		sudo systemctl daemon-reload && sudo systemctl reset-failed
 	else
@@ -57,8 +56,10 @@ fi
 sudo chown -R prometheus:prometheus $etcdir $libdir && \
 	sudo chown prometheus:prometheus /usr/local/bin/{prometheus,promtool}
 
-sudo cp $projectdir/prometheus.service $systemddir/ 
-sudo systemctl enable prometheus.service &> /dev/null && sudo systemctl start prometheus.service &> /dev/null
+sudo cp -f $projectdir/prometheus.service $systemddir/ 
+sudo systemctl enable prometheus.service &> /dev/null && \
+	sudo systemctl start prometheus.service &> /dev/null && \
+	sudo systemctl daemon-reload
 
 if [ $? -eq 0 ];
 then

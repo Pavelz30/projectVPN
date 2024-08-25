@@ -21,7 +21,7 @@ then
         exit 1
 fi
 
-if [ -d $etcdir ] || [ -d $libdir ] || [ -f /usr/local/bin/alertmanager ] || [ -f /etc/systemd/system/alertmanager.service ];
+if [ -d $etcdir ] || [ -d $libdir ] || [ -f /usr/local/bin/alertmanager ] || [ -f $systemddir/alertmanager.service ];
 then
         echo -n "Возможно, у вас уже установлен Alertmanager. Введите 'force' чтобы удалить все конфликтующие файлы, иначе 'none': "
         read var
@@ -29,7 +29,6 @@ then
         then
                 sudo rm -rf $etcdir \
                         $libdir \
-			$systemddir/alertmanager.service \
 			/usr/local/bin/{alertmanager,amtool}
                 sudo systemctl daemon-reload && sudo systemctl reset-failed
         else
@@ -45,7 +44,7 @@ tar -xf alertmanager-$version.linux-amd64.tar.gz && rm -rf alertmanager-$version
 
 sudo mkdir -p $etcdir $libdir
 sudo cp $workdir/alertmanager $workdir/amtool /usr/local/bin/ && \
-       sudo cp $projectdir/alertmanager.yml $etcdir
+       sudo cp $projectdir/{alertmanager.yml,rules.yml} $etcdir
 
 grep -w alertmanager /etc/passwd > /dev/null
 if [ $? -ne 0 ];
@@ -56,8 +55,10 @@ fi
 sudo chown -R alertmanager:alertmanager $etcdir $libdir && \
 	sudo chown alertmanager:alertmanager /usr/local/bin/{alertmanager,amtool}
 
-sudo cp $projectdir/alertmanager.service $systemddir/
-sudo systemctl enable alertmanager.service &> /dev/null && sudo systemctl start alertmanager.service &> /dev/null
+sudo cp -f $projectdir/alertmanager.service $systemddir/
+sudo systemctl enable alertmanager.service &> /dev/null && \
+	sudo systemctl start alertmanager.service &> /dev/null && \
+	sudo systemctl daemon-reload
 
 if [ $? -eq 0 ];
 then
