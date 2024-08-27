@@ -1,6 +1,7 @@
 [Unit]
 Description=Prometheus Service
 Documentation=https://prometheus.io/docs/introduction/overview/
+Documentation=https://prometheus.io/download/
 After=network.target
 
 [Service]

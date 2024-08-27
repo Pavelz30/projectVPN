@@ -1,5 +1,6 @@
 [Unit]
 Description=Alertmanager Service
+Documentation=https://prometheus.io/download/
 After=network.target
 
 [Service]

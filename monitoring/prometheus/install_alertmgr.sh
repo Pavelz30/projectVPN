@@ -5,6 +5,7 @@
 if [ $# -ne 1 ];
 then
         echo "Требуется один параметр - версия Alertmanager!"
+	echo "https://prometheus.io/download/"
         exit 1
 fi
 
@@ -30,7 +31,6 @@ then
                 sudo rm -rf $etcdir \
                         $libdir \
 			/usr/local/bin/{alertmanager,amtool}
-                sudo systemctl daemon-reload && sudo systemctl reset-failed
         else
                 echo -e "\nУстраните конфликтующие файлы и перезапустите скрипт!"
                 echo -e "$etcdir\n$libdir\n$systemddir/alertmanager.service\n/usr/local/bin/{alertmanager,amtool}"

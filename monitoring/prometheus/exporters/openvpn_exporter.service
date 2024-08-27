@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenVPN Exporter Service
+Documentation=https://github.com/kumina/openvpn_exporter
+After=network.target
+
+[Service]
+User=root
+Group=root
+Type=simple
+ExecStart=/usr/local/bin/openvpn_exporter
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

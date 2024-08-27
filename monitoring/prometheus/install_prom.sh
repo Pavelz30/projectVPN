@@ -5,6 +5,7 @@
 if [ $# -ne 1 ];
 then
 	echo "Требуется один параметр - версия Prometheus!"
+	echo "https://prometheus.io/download/"
 	exit 1
 fi
 
@@ -31,7 +32,6 @@ then
 		sudo rm -rf $etcdir \
 			$libdir \
 			/usr/local/bin/{prometheus,promtool}
-		sudo systemctl daemon-reload && sudo systemctl reset-failed
 	else
 		echo -e "\nУстраните конфликтующие файлы и перезапустите скрипт!"
 		echo -e "$etcdir\n$libdir\n$systemddir/prometheus.service\n/usr/local/bin/{prometheus,promtool}"
